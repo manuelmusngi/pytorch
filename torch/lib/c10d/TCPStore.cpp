@@ -394,7 +394,7 @@ void TCPStoreDaemon::run() {
 TCPStore::TCPStore(
     const std::string& masterAddr,
     PortType masterPort,
-    int numWorkers,
+    c10::optional<int> numWorkers,
     bool isServer,
     const std::chrono::milliseconds& timeout,
     bool waitWorkers)
@@ -416,7 +416,7 @@ TCPStore::TCPStore(
   // Connect to the daemon
   storeSocket_ = tcputil::connect(
       tcpStoreAddr_, tcpStorePort_, /* wait= */ true, timeout_);
-  if (waitWorkers) {
+  if (numWorkers >= 0 && waitWorkers) {
     waitForWorkers();
   }
 }
